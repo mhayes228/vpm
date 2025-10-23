@@ -1,0 +1,840 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Accessible Banner Patterns – VPM Inspired</title>
+  <style>
+    :root {
+      --vpm-navy: #0a2f5a;
+      --vpm-light-navy: #1f4a7f;
+      --vpm-sky: #e9f2fb;
+      --vpm-red: #c62828;
+      --vpm-amber: #f57c00;
+      --vpm-plum: #3f2a56;
+      --vpm-mist: #eef2f8;
+      --text-dark: #1b1f23;
+      --text-light: #ffffff;
+      --focus-outline: 3px solid #ffbf47;
+      font-family: "Source Sans Pro", "Segoe UI", system-ui, -apple-system, sans-serif;
+    }
+
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      background: var(--vpm-mist);
+      color: var(--text-dark);
+      line-height: 1.6;
+    }
+
+    header {
+      background: linear-gradient(135deg, rgba(10, 47, 90, 0.95), rgba(31, 74, 127, 0.9));
+      color: var(--text-light);
+      padding: clamp(2.25rem, 4vw, 3.5rem) clamp(1.5rem, 6vw, 4rem);
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    header::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at top right, rgba(255, 255, 255, 0.18), transparent 55%);
+      pointer-events: none;
+    }
+
+    header h1 {
+      margin: 0 auto 0.75rem;
+      max-width: 52rem;
+      font-weight: 700;
+      font-size: clamp(2rem, 4vw, 2.9rem);
+      letter-spacing: -0.01em;
+    }
+
+    header p {
+      margin: 0 auto;
+      max-width: 46rem;
+      font-size: clamp(1rem, 2vw, 1.2rem);
+      color: rgba(255, 255, 255, 0.9);
+    }
+
+    main {
+      padding: clamp(2rem, 5vw, 4rem) clamp(1rem, 5vw, 3rem) 4.5rem;
+      max-width: 78rem;
+      margin: 0 auto;
+    }
+
+    .tablist {
+      display: inline-flex;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 2.5rem;
+    }
+
+    .tablist button {
+      border: 0;
+      background: #ffffff;
+      color: var(--vpm-navy);
+      padding: 0.75rem 1.6rem;
+      font-size: 1rem;
+      font-weight: 600;
+      border-radius: 999px;
+      box-shadow: 0 8px 20px rgba(9, 30, 66, 0.15);
+      cursor: pointer;
+      transition: background 0.2s ease, color 0.2s ease, transform 0.2s ease;
+    }
+
+    .tablist button[aria-selected="true"] {
+      background: var(--vpm-navy);
+      color: var(--text-light);
+      transform: translateY(-1px);
+    }
+
+    .tablist button:focus-visible {
+      outline: var(--focus-outline);
+      outline-offset: 2px;
+    }
+
+    section.content-panel {
+      display: none;
+      background: #ffffff;
+      border-radius: 18px;
+      padding: clamp(1.75rem, 3vw, 2.5rem);
+      box-shadow: 0 22px 40px rgba(9, 30, 66, 0.12);
+    }
+
+    section.content-panel[aria-hidden="false"] {
+      display: block;
+    }
+
+    .panel-header {
+      display: grid;
+      gap: 0.5rem;
+      margin-bottom: clamp(1.5rem, 2.5vw, 2rem);
+    }
+
+    .panel-header h2 {
+      font-size: clamp(1.55rem, 3vw, 2rem);
+      margin: 0;
+      color: var(--vpm-navy);
+    }
+
+    .panel-header p {
+      margin: 0;
+      color: #4a5770;
+    }
+
+    .pattern-group + .pattern-group {
+      margin-top: clamp(2rem, 4vw, 3.25rem);
+      padding-top: clamp(1.5rem, 3vw, 2.25rem);
+      border-top: 1px solid rgba(15, 37, 68, 0.08);
+    }
+
+    .pattern-group h3 {
+      font-size: clamp(1.25rem, 2.5vw, 1.55rem);
+      margin-bottom: 0.35rem;
+      color: var(--vpm-light-navy);
+    }
+
+    .pattern-group p {
+      margin-top: 0;
+      color: #5b667d;
+      max-width: 52rem;
+    }
+
+    .variation-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: clamp(1.25rem, 2vw, 1.75rem);
+      margin-top: 1.25rem;
+    }
+
+    article.pattern-variation {
+      border: 1px solid rgba(15, 37, 68, 0.08);
+      border-radius: 16px;
+      padding: 1.25rem;
+      display: grid;
+      gap: 0.85rem;
+      background: var(--vpm-sky);
+    }
+
+    .pattern-variation h4 {
+      margin: 0;
+      font-size: 1.05rem;
+      color: var(--vpm-navy);
+    }
+
+    .preview-box {
+      background: #ffffff;
+      border-radius: 12px;
+      padding: 1rem;
+      box-shadow: inset 0 0 0 1px rgba(15, 37, 68, 0.05);
+    }
+
+    .preview-box > *:first-child {
+      margin-top: 0;
+    }
+
+    .copy-row {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 0.5rem 1rem;
+    }
+
+    .copy-button {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: var(--vpm-light-navy);
+      color: #ffffff;
+      border: none;
+      border-radius: 999px;
+      padding: 0.6rem 1.4rem;
+      font-size: 0.95rem;
+      font-weight: 600;
+      cursor: pointer;
+      box-shadow: 0 10px 22px rgba(26, 57, 101, 0.18);
+      transition: background 0.2s ease, transform 0.2s ease;
+    }
+
+    .copy-button:hover,
+    .copy-button:focus-visible {
+      background: var(--vpm-navy);
+      transform: translateY(-1px);
+      outline: none;
+    }
+
+    .copy-button[aria-expanded="true"] {
+      background: var(--vpm-plum);
+    }
+
+    .copy-feedback {
+      font-size: 0.9rem;
+      color: var(--vpm-light-navy);
+      font-weight: 600;
+      min-width: 12ch;
+    }
+
+    .code-snippet-wrapper {
+      background: rgba(10, 47, 90, 0.08);
+      border-radius: 12px;
+      padding: 0.9rem;
+      display: none;
+    }
+
+    .code-snippet-wrapper[aria-hidden="false"] {
+      display: block;
+    }
+
+    pre.code-snippet {
+      margin: 0;
+      overflow-x: auto;
+      font-size: 0.82rem;
+      font-family: "Fira Code", "Source Code Pro", monospace;
+      line-height: 1.55;
+      color: #172b4d;
+      background: rgba(255, 255, 255, 0.92);
+      border-radius: 8px;
+      padding: 0.75rem;
+    }
+
+    .coming-soon {
+      background: var(--vpm-sky);
+      border-radius: 12px;
+      padding: 1.5rem;
+      border: 1px dashed rgba(15, 37, 68, 0.2);
+      color: #4a5770;
+    }
+
+    @media (max-width: 680px) {
+      .copy-row {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      article.pattern-variation {
+        padding: 1rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Accessible Banner Patterns Inspired by VPM</h1>
+    <p>
+      Explore a gallery of ADA-compliant, responsive header banners with ready-to-copy, self-contained
+      snippets. Each variation reflects the modern, journalism-forward aesthetic of VPM.org.
+    </p>
+  </header>
+
+  <main>
+    <div class="tablist" role="tablist" aria-label="Pattern category selector">
+      <button role="tab" id="tab-banners" aria-controls="panel-banners" aria-selected="true">Banner Gallery</button>
+      <button role="tab" id="tab-cta" aria-controls="panel-cta" aria-selected="false">CTA Blocks</button>
+    </div>
+
+    <section id="panel-banners" class="content-panel" role="tabpanel" aria-labelledby="tab-banners" aria-hidden="false">
+      <div class="panel-header">
+        <h2>Banner Options</h2>
+        <p>
+          Mix and match alert, promotional, and rotating banners to suit newsroom announcements, campaigns, and
+          urgent messaging. Each card below showcases a distinct, responsive option with accessible behaviors
+          baked in.
+        </p>
+      </div>
+
+      <div class="pattern-group" aria-label="Simple text alert banners">
+        <h3>Simple Text Alerts</h3>
+        <p>Concise announcements with dismiss buttons, keyboard support, and <code>role="alert"</code>.</p>
+        <div class="variation-grid">
+          <article class="pattern-variation" data-snippet-id="alert-navy">
+            <h4>Navy Broadcast Update</h4>
+            <div class="preview-box">
+              <div class="preview-alert" role="alert" data-alert-preview style="display:flex;align-items:center;justify-content:space-between;gap:1rem;background:#1f4a7f;color:#ffffff;padding:0.85rem 1.1rem;border-radius:12px;font-size:1rem;">
+                <span style="display:flex;align-items:center;gap:0.55rem;max-width:calc(100% - 2.5rem);">
+                  <strong>Programming Note:</strong>
+                  Tonight's live broadcast begins at 7 PM ET with Richmond perspectives.
+                </span>
+                <button type="button" data-alert-dismiss aria-label="Close alert" style="background:transparent;border:0;color:#ffffff;font-size:1.5rem;line-height:1;cursor:pointer;">&times;</button>
+              </div>
+            </div>
+            <div class="copy-row">
+              <button class="copy-button" data-snippet-trigger aria-expanded="false">Copy Embed Code</button>
+              <span class="copy-feedback" aria-live="polite"></span>
+            </div>
+            <div class="code-snippet-wrapper" aria-hidden="true">
+              <pre class="code-snippet" tabindex="0"></pre>
+            </div>
+          </article>
+
+          <article class="pattern-variation" data-snippet-id="alert-muted">
+            <h4>Muted Service Notice</h4>
+            <div class="preview-box">
+              <div class="preview-alert" role="alert" data-alert-preview style="display:flex;align-items:center;justify-content:space-between;gap:1rem;background:#f0f4fa;color:#0a2f5a;padding:0.9rem 1.1rem;border-radius:12px;font-size:1rem;border:1px solid rgba(10,47,90,0.2);">
+                <span style="display:flex;align-items:center;gap:0.55rem;max-width:calc(100% - 2.5rem);">
+                  <strong>Service Update:</strong>
+                  Our member portal will be offline for maintenance Saturday 1–3 PM.
+                </span>
+                <button type="button" data-alert-dismiss aria-label="Close alert" style="background:transparent;border:0;color:#0a2f5a;font-size:1.5rem;line-height:1;cursor:pointer;">&times;</button>
+              </div>
+            </div>
+            <div class="copy-row">
+              <button class="copy-button" data-snippet-trigger aria-expanded="false">Copy Embed Code</button>
+              <span class="copy-feedback" aria-live="polite"></span>
+            </div>
+            <div class="code-snippet-wrapper" aria-hidden="true">
+              <pre class="code-snippet" tabindex="0"></pre>
+            </div>
+          </article>
+        </div>
+      </div>
+
+      <div class="pattern-group" aria-label="Call-to-action banners">
+        <h3>CTA Banners</h3>
+        <p>High-contrast layouts with bold buttons to drive membership, donations, or newsletter signups.</p>
+        <div class="variation-grid">
+          <article class="pattern-variation" data-snippet-id="cta-gradient">
+            <h4>Gradient Member Drive</h4>
+            <div class="preview-box">
+              <div style="font-family:inherit;background:linear-gradient(120deg,#0a2f5a,#3f6fa3);color:#ffffff;border-radius:12px;padding:1rem 1.25rem;display:flex;flex-wrap:wrap;align-items:center;gap:1rem;">
+                <div style="flex:1 1 16rem;min-width:12rem;">
+                  <span style="display:block;font-weight:600;letter-spacing:0.02em;font-size:0.95rem;opacity:0.9;">Support journalism that matters</span>
+                  <span style="display:block;font-size:1.15rem;margin-top:0.2rem;">Become a sustaining member to power trusted reporting.</span>
+                </div>
+                <a href="#join" style="flex:0 0 auto;background:#ff914d;color:#0a2f5a;font-weight:700;padding:0.7rem 1.7rem;border-radius:999px;text-decoration:none;display:inline-flex;align-items:center;justify-content:center;min-width:8rem;" role="button">Join Today</a>
+              </div>
+            </div>
+            <div class="copy-row">
+              <button class="copy-button" data-snippet-trigger aria-expanded="false">Copy Embed Code</button>
+              <span class="copy-feedback" aria-live="polite"></span>
+            </div>
+            <div class="code-snippet-wrapper" aria-hidden="true">
+              <pre class="code-snippet" tabindex="0"></pre>
+            </div>
+          </article>
+
+          <article class="pattern-variation" data-snippet-id="cta-modern">
+            <h4>Modern Newsletter Prompt</h4>
+            <div class="preview-box">
+              <div style="font-family:inherit;background:#ffffff;border-radius:12px;padding:1rem 1.2rem;display:flex;flex-wrap:wrap;align-items:center;gap:1rem;border:1px solid rgba(10,47,90,0.15);">
+                <div style="flex:1 1 16rem;min-width:12rem;color:#0a2f5a;">
+                  <span style="display:block;font-weight:700;letter-spacing:0.03em;font-size:0.9rem;text-transform:uppercase;">Stay informed</span>
+                  <span style="display:block;font-size:1.15rem;margin-top:0.35rem;">Subscribe for weekly stories exploring Virginia.</span>
+                </div>
+                <a href="#subscribe" style="flex:0 0 auto;background:#0a2f5a;color:#ffffff;font-weight:700;padding:0.7rem 1.8rem;border-radius:10px;text-decoration:none;display:inline-flex;align-items:center;justify-content:center;min-width:8rem;" role="button">Subscribe</a>
+              </div>
+            </div>
+            <div class="copy-row">
+              <button class="copy-button" data-snippet-trigger aria-expanded="false">Copy Embed Code</button>
+              <span class="copy-feedback" aria-live="polite"></span>
+            </div>
+            <div class="code-snippet-wrapper" aria-hidden="true">
+              <pre class="code-snippet" tabindex="0"></pre>
+            </div>
+          </article>
+        </div>
+      </div>
+
+      <div class="pattern-group" aria-label="Rotating info banners">
+        <h3>Rotating Info Banners</h3>
+        <p>Carousel-style updates that rotate automatically with accessible pause controls.</p>
+        <div class="variation-grid">
+          <article class="pattern-variation" data-snippet-id="rotating-broadcast">
+            <h4>Broadcast Highlights</h4>
+            <div class="preview-box">
+              <div class="preview-rotator" data-rotator-preview style="position:relative;background:#1f4a7f;color:#ffffff;border-radius:12px;padding:0.9rem 1.2rem;display:flex;align-items:center;gap:1rem;overflow:hidden;min-height:3.4rem;">
+                <div data-rotator-text aria-live="polite" aria-atomic="true" style="flex:1 1 auto;font-size:1rem;">
+                  <strong>Listen Now:</strong> Explore this week's episode featuring Richmond artists.
+                </div>
+                <button type="button" data-rotator-toggle style="flex:0 0 auto;background:#0a2f5a;color:#ffffff;border:0;border-radius:999px;padding:0.5rem 1.2rem;font-weight:600;cursor:pointer;">Pause</button>
+              </div>
+            </div>
+            <div class="copy-row">
+              <button class="copy-button" data-snippet-trigger aria-expanded="false">Copy Embed Code</button>
+              <span class="copy-feedback" aria-live="polite"></span>
+            </div>
+            <div class="code-snippet-wrapper" aria-hidden="true">
+              <pre class="code-snippet" tabindex="0"></pre>
+            </div>
+          </article>
+
+          <article class="pattern-variation" data-snippet-id="rotating-community">
+            <h4>Community Calendar</h4>
+            <div class="preview-box">
+              <div class="preview-rotator" data-rotator-preview data-messages='["<strong>Community Town Hall:</strong> Join us tomorrow at 6 PM for live Q&amp;A.","<strong>Volunteer Meetup:</strong> Saturday at 10 AM with breakfast provided.","<strong>Arts in the Park:</strong> Free performances this Sunday afternoon."]' style="position:relative;background:#28435f;color:#ffffff;border-radius:12px;padding:0.9rem 1.2rem;display:flex;align-items:center;gap:1rem;overflow:hidden;min-height:3.4rem;">
+                <div data-rotator-text aria-live="polite" aria-atomic="true" style="flex:1 1 auto;font-size:1rem;">
+                  <strong>Community Town Hall:</strong> Join us tomorrow at 6 PM for live Q&amp;A.
+                </div>
+                <button type="button" data-rotator-toggle style="flex:0 0 auto;background:#ffffff;color:#0a2f5a;border:0;border-radius:999px;padding:0.5rem 1.2rem;font-weight:700;cursor:pointer;">Pause</button>
+              </div>
+            </div>
+            <div class="copy-row">
+              <button class="copy-button" data-snippet-trigger aria-expanded="false">Copy Embed Code</button>
+              <span class="copy-feedback" aria-live="polite"></span>
+            </div>
+            <div class="code-snippet-wrapper" aria-hidden="true">
+              <pre class="code-snippet" tabindex="0"></pre>
+            </div>
+          </article>
+        </div>
+      </div>
+
+      <div class="pattern-group" aria-label="Urgent alert banners">
+        <h3>Urgent Alerts</h3>
+        <p>High-visibility, slim alerts for critical messaging with iconography and assertive tone.</p>
+        <div class="variation-grid">
+          <article class="pattern-variation" data-snippet-id="urgent-red">
+            <h4>Severe Weather Warning</h4>
+            <div class="preview-box">
+              <div role="alert" style="display:flex;align-items:center;gap:0.8rem;background:#c62828;color:#ffffff;padding:0.85rem 1.1rem;border-radius:12px;font-size:1rem;font-weight:600;">
+                <span aria-hidden="true" style="font-size:1.6rem;">⚠️</span>
+                <span>Severe weather advisory in effect for Central Virginia. Stay tuned for live updates.</span>
+              </div>
+            </div>
+            <div class="copy-row">
+              <button class="copy-button" data-snippet-trigger aria-expanded="false">Copy Embed Code</button>
+              <span class="copy-feedback" aria-live="polite"></span>
+            </div>
+            <div class="code-snippet-wrapper" aria-hidden="true">
+              <pre class="code-snippet" tabindex="0"></pre>
+            </div>
+          </article>
+
+          <article class="pattern-variation" data-snippet-id="urgent-amber">
+            <h4>Traffic Alert</h4>
+            <div class="preview-box">
+              <div role="alert" style="display:flex;align-items:center;gap:0.8rem;background:#f57c00;color:#0a2f5a;padding:0.85rem 1.1rem;border-radius:12px;font-size:1rem;font-weight:600;">
+                <span aria-hidden="true" style="font-size:1.6rem;">🚧</span>
+                <span>Expect delays on I-95 near Richmond due to overnight lane closures.</span>
+              </div>
+            </div>
+            <div class="copy-row">
+              <button class="copy-button" data-snippet-trigger aria-expanded="false">Copy Embed Code</button>
+              <span class="copy-feedback" aria-live="polite"></span>
+            </div>
+            <div class="code-snippet-wrapper" aria-hidden="true">
+              <pre class="code-snippet" tabindex="0"></pre>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section id="panel-cta" class="content-panel" role="tabpanel" aria-labelledby="tab-cta" aria-hidden="true">
+      <div class="panel-header">
+        <h2>Call-to-Action Blocks</h2>
+        <p>Dedicated CTA block options will be curated here in a future update.</p>
+      </div>
+      <div class="coming-soon">
+        Looking for feature blocks beyond slim banners? A focused collection of CTA-only patterns is on the
+        roadmap. Stay tuned!
+      </div>
+    </section>
+  </main>
+
+  <!-- Embed snippets stored as text for copying -->
+  <script type="text/plain" id="snippet-alert-navy">&lt;!-- Simple Alert: Navy Broadcast Update --&gt;
+&lt;div role=&quot;alert&quot; aria-live=&quot;assertive&quot; style=&quot;font-family: 'Source Sans Pro', 'Segoe UI', system-ui, sans-serif;&quot;&gt;
+  &lt;div style=&quot;display:flex;align-items:center;justify-content:space-between;gap:1rem;background:#1f4a7f;color:#ffffff;padding:0.85rem 1.1rem;border-radius:12px;box-shadow:0 10px 24px rgba(15,37,68,0.2);font-size:1rem;&quot;&gt;
+    &lt;span style=&quot;display:flex;align-items:center;gap:0.55rem;max-width:calc(100% - 2.5rem);&quot;&gt;
+      &lt;strong&gt;Programming Note:&lt;/strong&gt;
+      Tonight's live broadcast begins at 7 PM ET with Richmond perspectives.
+    &lt;/span&gt;
+    &lt;button type=&quot;button&quot; aria-label=&quot;Close alert&quot; style=&quot;background:transparent;border:0;color:#ffffff;font-size:1.5rem;line-height:1;cursor:pointer;&quot;&gt;&amp;times;&lt;/button&gt;
+  &lt;/div&gt;
+  &lt;script&gt;
+    (function(){
+      var alertRoot = document.currentScript.previousElementSibling;
+      var closeBtn = alertRoot.querySelector('button');
+      closeBtn.addEventListener('click', function(){
+        alertRoot.style.display = 'none';
+      });
+      closeBtn.addEventListener('keydown', function(event){
+        if(event.key === 'Enter' || event.key === ' ' || event.key === 'Spacebar'){
+          event.preventDefault();
+          closeBtn.click();
+        }
+      });
+    })();
+  &lt;/script&gt;
+&lt;/div&gt;</script>
+
+  <script type="text/plain" id="snippet-alert-muted">&lt;!-- Simple Alert: Muted Service Notice --&gt;
+&lt;div role=&quot;alert&quot; aria-live=&quot;assertive&quot; style=&quot;font-family: 'Source Sans Pro', 'Segoe UI', system-ui, sans-serif;&quot;&gt;
+  &lt;div style=&quot;display:flex;align-items:center;justify-content:space-between;gap:1rem;background:#f0f4fa;color:#0a2f5a;padding:0.9rem 1.1rem;border-radius:12px;border:1px solid rgba(10,47,90,0.25);box-shadow:0 8px 20px rgba(15,37,68,0.08);font-size:1rem;&quot;&gt;
+    &lt;span style=&quot;display:flex;align-items:center;gap:0.55rem;max-width:calc(100% - 2.5rem);&quot;&gt;
+      &lt;strong&gt;Service Update:&lt;/strong&gt;
+      Our member portal will be offline for maintenance Saturday 1–3 PM.
+    &lt;/span&gt;
+    &lt;button type=&quot;button&quot; aria-label=&quot;Close alert&quot; style=&quot;background:transparent;border:0;color:#0a2f5a;font-size:1.5rem;line-height:1;cursor:pointer;&quot;&gt;&amp;times;&lt;/button&gt;
+  &lt;/div&gt;
+  &lt;script&gt;
+    (function(){
+      var alertRoot = document.currentScript.previousElementSibling;
+      var closeBtn = alertRoot.querySelector('button');
+      closeBtn.addEventListener('click', function(){
+        alertRoot.style.display = 'none';
+      });
+      closeBtn.addEventListener('keydown', function(event){
+        if(event.key === 'Enter' || event.key === ' ' || event.key === 'Spacebar'){
+          event.preventDefault();
+          closeBtn.click();
+        }
+      });
+    })();
+  &lt;/script&gt;
+&lt;/div&gt;</script>
+
+  <script type="text/plain" id="snippet-cta-gradient">&lt;!-- CTA Banner: Gradient Member Drive --&gt;
+&lt;div role=&quot;region&quot; aria-label=&quot;Membership campaign&quot; style=&quot;font-family: 'Source Sans Pro', 'Segoe UI', system-ui, sans-serif;&quot;&gt;
+  &lt;div style=&quot;background:linear-gradient(120deg,#0a2f5a,#3f6fa3);color:#ffffff;border-radius:12px;padding:1rem 1.25rem;display:flex;flex-wrap:wrap;align-items:center;gap:1rem;box-shadow:0 12px 26px rgba(15,37,68,0.18);&quot;&gt;
+    &lt;div style=&quot;flex:1 1 16rem;min-width:12rem;&quot;&gt;
+      &lt;span style=&quot;display:block;font-weight:600;letter-spacing:0.02em;font-size:0.95rem;opacity:0.9;&quot;&gt;Support journalism that matters&lt;/span&gt;
+      &lt;span style=&quot;display:block;font-size:1.15rem;margin-top:0.2rem;&quot;&gt;Become a sustaining member to power trusted reporting.&lt;/span&gt;
+    &lt;/div&gt;
+    &lt;a href=&quot;#join&quot; role=&quot;button&quot; style=&quot;flex:0 0 auto;background:#ff914d;color:#0a2f5a;font-weight:700;padding:0.7rem 1.7rem;border-radius:999px;text-decoration:none;display:inline-flex;align-items:center;justify-content:center;min-width:8rem;transition:transform 0.2s ease,box-shadow 0.2s ease;&quot;&gt;Join Today&lt;/a&gt;
+  &lt;/div&gt;
+  &lt;script&gt;
+    (function(){
+      var banner = document.currentScript.previousElementSibling;
+      var cta = banner.querySelector('a');
+      cta.addEventListener('focus', function(){
+        cta.style.boxShadow = '0 0 0 3px rgba(255,255,255,0.75)';
+      });
+      cta.addEventListener('blur', function(){
+        cta.style.boxShadow = 'none';
+      });
+      cta.addEventListener('mouseenter', function(){
+        cta.style.transform = 'translateY(-1px)';
+        cta.style.boxShadow = '0 10px 20px rgba(15,37,68,0.3)';
+      });
+      cta.addEventListener('mouseleave', function(){
+        cta.style.transform = 'none';
+        cta.style.boxShadow = 'none';
+      });
+    })();
+  &lt;/script&gt;
+&lt;/div&gt;</script>
+
+  <script type="text/plain" id="snippet-cta-modern">&lt;!-- CTA Banner: Modern Newsletter Prompt --&gt;
+&lt;div role=&quot;region&quot; aria-label=&quot;Newsletter subscription prompt&quot; style=&quot;font-family: 'Source Sans Pro', 'Segoe UI', system-ui, sans-serif;&quot;&gt;
+  &lt;div style=&quot;background:#ffffff;border-radius:12px;padding:1rem 1.2rem;display:flex;flex-wrap:wrap;align-items:center;gap:1rem;border:1px solid rgba(10,47,90,0.15);box-shadow:0 12px 26px rgba(15,37,68,0.12);&quot;&gt;
+    &lt;div style=&quot;flex:1 1 16rem;min-width:12rem;color:#0a2f5a;&quot;&gt;
+      &lt;span style=&quot;display:block;font-weight:700;letter-spacing:0.03em;font-size:0.9rem;text-transform:uppercase;&quot;&gt;Stay informed&lt;/span&gt;
+      &lt;span style=&quot;display:block;font-size:1.15rem;margin-top:0.35rem;&quot;&gt;Subscribe for weekly stories exploring Virginia.&lt;/span&gt;
+    &lt;/div&gt;
+    &lt;a href=&quot;#subscribe&quot; role=&quot;button&quot; style=&quot;flex:0 0 auto;background:#0a2f5a;color:#ffffff;font-weight:700;padding:0.7rem 1.8rem;border-radius:10px;text-decoration:none;display:inline-flex;align-items:center;justify-content:center;min-width:8rem;transition:background 0.2s ease,transform 0.2s ease;&quot;&gt;Subscribe&lt;/a&gt;
+  &lt;/div&gt;
+  &lt;script&gt;
+    (function(){
+      var banner = document.currentScript.previousElementSibling;
+      var cta = banner.querySelector('a');
+      cta.addEventListener('focus', function(){
+        cta.style.outline = '3px solid rgba(10,47,90,0.3)';
+        cta.style.outlineOffset = '4px';
+      });
+      cta.addEventListener('blur', function(){
+        cta.style.outline = 'none';
+      });
+      cta.addEventListener('mouseenter', function(){
+        cta.style.transform = 'translateY(-1px)';
+        cta.style.background = '#123d6f';
+      });
+      cta.addEventListener('mouseleave', function(){
+        cta.style.transform = 'none';
+        cta.style.background = '#0a2f5a';
+      });
+    })();
+  &lt;/script&gt;
+&lt;/div&gt;</script>
+
+  <script type="text/plain" id="snippet-rotating-broadcast">&lt;!-- Rotating Info Banner: Broadcast Highlights --&gt;
+&lt;div role=&quot;region&quot; aria-label=&quot;Featured programming updates&quot; style=&quot;font-family: 'Source Sans Pro', 'Segoe UI', system-ui, sans-serif;&quot;&gt;
+  &lt;div style=&quot;position:relative;background:#1f4a7f;color:#ffffff;border-radius:12px;padding:0.9rem 1.2rem;display:flex;align-items:center;gap:1rem;overflow:hidden;min-height:3.4rem;box-shadow:0 12px 26px rgba(15,37,68,0.18);&quot;&gt;
+    &lt;div data-role=&quot;text&quot; aria-live=&quot;polite&quot; aria-atomic=&quot;true&quot; style=&quot;flex:1 1 auto;font-size:1rem;&quot;&gt;
+      &lt;strong&gt;Listen Now:&lt;/strong&gt; Explore this week's episode featuring Richmond artists.
+    &lt;/div&gt;
+    &lt;button type=&quot;button&quot; data-role=&quot;toggle&quot; aria-label=&quot;Pause rotating announcements&quot; style=&quot;flex:0 0 auto;background:#0a2f5a;color:#ffffff;border:0;border-radius:999px;padding:0.5rem 1.2rem;font-weight:600;cursor:pointer;transition:background 0.2s ease;&quot;&gt;Pause&lt;/button&gt;
+  &lt;/div&gt;
+  &lt;script&gt;
+    (function(){
+      var root = document.currentScript.previousElementSibling;
+      var textEl = root.querySelector('[data-role="text"]');
+      var toggleBtn = root.querySelector('[data-role="toggle"]');
+      var messages = [
+        "&lt;strong&gt;Listen Now:&lt;/strong&gt; Explore this week's episode featuring Richmond artists.",
+        "&lt;strong&gt;Happening Tomorrow:&lt;/strong&gt; Community town hall at 6 PM with live Q&amp;A.",
+        "&lt;strong&gt;New Podcast Drop:&lt;/strong&gt; Hear stories of resilience from across Virginia."
+      ];
+      var index = 0;
+      var active = true;
+      var timer = window.setInterval(nextMessage, 5000);
+
+      function nextMessage(){
+        if(!active) return;
+        index = (index + 1) % messages.length;
+        textEl.innerHTML = messages[index];
+      }
+
+      toggleBtn.addEventListener('click', function(){
+        active = !active;
+        toggleBtn.textContent = active ? 'Pause' : 'Play';
+        toggleBtn.setAttribute('aria-label', active ? 'Pause rotating announcements' : 'Play rotating announcements');
+        if(active){
+          window.clearInterval(timer);
+          timer = window.setInterval(nextMessage, 5000);
+        } else {
+          window.clearInterval(timer);
+        }
+      });
+
+      toggleBtn.addEventListener('keydown', function(event){
+        if(event.key === 'Enter' || event.key === ' '){
+          event.preventDefault();
+          toggleBtn.click();
+        }
+      });
+    })();
+  &lt;/script&gt;
+&lt;/div&gt;</script>
+
+  <script type="text/plain" id="snippet-rotating-community">&lt;!-- Rotating Info Banner: Community Calendar --&gt;
+&lt;div role=&quot;region&quot; aria-label=&quot;Community calendar highlights&quot; style=&quot;font-family: 'Source Sans Pro', 'Segoe UI', system-ui, sans-serif;&quot;&gt;
+  &lt;div style=&quot;position:relative;background:#28435f;color:#ffffff;border-radius:12px;padding:0.9rem 1.2rem;display:flex;align-items:center;gap:1rem;overflow:hidden;min-height:3.4rem;box-shadow:0 12px 26px rgba(15,37,68,0.18);&quot;&gt;
+    &lt;div data-role=&quot;text&quot; aria-live=&quot;polite&quot; aria-atomic=&quot;true&quot; style=&quot;flex:1 1 auto;font-size:1rem;&quot;&gt;
+      &lt;strong&gt;Community Town Hall:&lt;/strong&gt; Join us tomorrow at 6 PM for live Q&amp;A.
+    &lt;/div&gt;
+    &lt;button type=&quot;button&quot; data-role=&quot;toggle&quot; aria-label=&quot;Pause rotating community announcements&quot; style=&quot;flex:0 0 auto;background:#ffffff;color:#0a2f5a;border:0;border-radius:999px;padding:0.5rem 1.2rem;font-weight:700;cursor:pointer;transition:transform 0.2s ease;&quot;&gt;Pause&lt;/button&gt;
+  &lt;/div&gt;
+  &lt;script&gt;
+    (function(){
+      var root = document.currentScript.previousElementSibling;
+      var textEl = root.querySelector('[data-role="text"]');
+      var toggleBtn = root.querySelector('[data-role="toggle"]');
+      var messages = [
+        "&lt;strong&gt;Community Town Hall:&lt;/strong&gt; Join us tomorrow at 6 PM for live Q&amp;A.",
+        "&lt;strong&gt;Volunteer Meetup:&lt;/strong&gt; Saturday at 10 AM with breakfast provided.",
+        "&lt;strong&gt;Arts in the Park:&lt;/strong&gt; Free performances this Sunday afternoon."
+      ];
+      var index = 0;
+      var active = true;
+      var timer = window.setInterval(nextMessage, 5000);
+
+      function nextMessage(){
+        if(!active) return;
+        index = (index + 1) % messages.length;
+        textEl.innerHTML = messages[index];
+      }
+
+      toggleBtn.addEventListener('click', function(){
+        active = !active;
+        toggleBtn.textContent = active ? 'Pause' : 'Play';
+        toggleBtn.setAttribute('aria-label', active ? 'Pause rotating community announcements' : 'Play rotating community announcements');
+        if(active){
+          window.clearInterval(timer);
+          timer = window.setInterval(nextMessage, 5000);
+        } else {
+          window.clearInterval(timer);
+        }
+      });
+
+      toggleBtn.addEventListener('keydown', function(event){
+        if(event.key === 'Enter' || event.key === ' '){
+          event.preventDefault();
+          toggleBtn.click();
+        }
+      });
+    })();
+  &lt;/script&gt;
+&lt;/div&gt;</script>
+
+  <script type="text/plain" id="snippet-urgent-red">&lt;!-- Urgent Alert: Severe Weather Warning --&gt;
+&lt;div role=&quot;alert&quot; aria-live=&quot;assertive&quot; style=&quot;font-family: 'Source Sans Pro', 'Segoe UI', system-ui, sans-serif;&quot;&gt;
+  &lt;div style=&quot;display:flex;align-items:center;gap:0.8rem;background:#c62828;color:#ffffff;padding:0.85rem 1.1rem;border-radius:12px;font-size:1rem;font-weight:600;box-shadow:0 12px 28px rgba(198,40,40,0.35);&quot;&gt;
+    &lt;span aria-hidden=&quot;true&quot; style=&quot;font-size:1.6rem;&quot;&gt;⚠️&lt;/span&gt;
+    &lt;span&gt;Severe weather advisory in effect for Central Virginia. Stay tuned for live updates.&lt;/span&gt;
+  &lt;/div&gt;
+&lt;/div&gt;</script>
+
+  <script type="text/plain" id="snippet-urgent-amber">&lt;!-- Urgent Alert: Traffic Advisory --&gt;
+&lt;div role=&quot;alert&quot; aria-live=&quot;assertive&quot; style=&quot;font-family: 'Source Sans Pro', 'Segoe UI', system-ui, sans-serif;&quot;&gt;
+  &lt;div style=&quot;display:flex;align-items:center;gap:0.8rem;background:#f57c00;color:#0a2f5a;padding:0.85rem 1.1rem;border-radius:12px;font-size:1rem;font-weight:600;box-shadow:0 12px 26px rgba(245,124,0,0.32);&quot;&gt;
+    &lt;span aria-hidden=&quot;true&quot; style=&quot;font-size:1.6rem;&quot;&gt;🚧&lt;/span&gt;
+    &lt;span&gt;Expect delays on I-95 near Richmond due to overnight lane closures.&lt;/span&gt;
+  &lt;/div&gt;
+&lt;/div&gt;</script>
+
+  <script>
+    const tabButtons = Array.from(document.querySelectorAll('.tablist button'));
+
+    tabButtons.forEach((btn) => {
+      const isSelected = btn.getAttribute('aria-selected') === 'true';
+      btn.setAttribute('tabindex', isSelected ? '0' : '-1');
+    });
+
+    function activateTab(tab) {
+      tabButtons.forEach((btn) => {
+        const isSelected = btn === tab;
+        btn.setAttribute('aria-selected', String(isSelected));
+        btn.setAttribute('tabindex', isSelected ? '0' : '-1');
+        const panel = document.getElementById(btn.getAttribute('aria-controls'));
+        if (panel) {
+          panel.setAttribute('aria-hidden', String(!isSelected));
+        }
+      });
+      tab.focus();
+    }
+
+    tabButtons.forEach((btn) => {
+      btn.addEventListener('click', () => activateTab(btn));
+      btn.addEventListener('keydown', (event) => {
+        const index = tabButtons.indexOf(btn);
+        if (event.key === 'ArrowRight') {
+          event.preventDefault();
+          activateTab(tabButtons[(index + 1) % tabButtons.length]);
+        }
+        if (event.key === 'ArrowLeft') {
+          event.preventDefault();
+          activateTab(tabButtons[(index - 1 + tabButtons.length) % tabButtons.length]);
+        }
+        if (event.key === 'Home') {
+          event.preventDefault();
+          activateTab(tabButtons[0]);
+        }
+        if (event.key === 'End') {
+          event.preventDefault();
+          activateTab(tabButtons[tabButtons.length - 1]);
+        }
+      });
+    });
+
+    document.querySelectorAll('[data-snippet-trigger]').forEach((button) => {
+      button.addEventListener('click', async () => {
+        const variation = button.closest('[data-snippet-id]');
+        const snippetId = variation.getAttribute('data-snippet-id');
+        const template = document.getElementById(`snippet-${snippetId}`);
+        const code = template ? template.textContent.trim() : '';
+        const pre = variation.querySelector('.code-snippet');
+        const wrapper = variation.querySelector('.code-snippet-wrapper');
+        const feedback = variation.querySelector('.copy-feedback');
+
+        if (pre.textContent.trim() === '') {
+          pre.textContent = code;
+        }
+
+        wrapper.setAttribute('aria-hidden', 'false');
+        button.setAttribute('aria-expanded', 'true');
+
+        try {
+          await navigator.clipboard.writeText(code);
+          feedback.textContent = 'Embed code copied!';
+        } catch (error) {
+          feedback.textContent = 'Copy failed. Select text below.';
+        }
+
+        window.setTimeout(() => {
+          if (feedback.textContent === 'Embed code copied!') {
+            feedback.textContent = '';
+          }
+        }, 3000);
+      });
+    });
+
+    document.querySelectorAll('[data-alert-preview]').forEach((alert) => {
+      const dismissBtn = alert.querySelector('[data-alert-dismiss]');
+      if (!dismissBtn) return;
+      dismissBtn.addEventListener('click', () => {
+        alert.style.opacity = '0';
+        setTimeout(() => {
+          alert.style.display = 'none';
+        }, 200);
+      });
+    });
+
+    document.querySelectorAll('[data-rotator-preview]').forEach((rotator) => {
+      const textEl = rotator.querySelector('[data-rotator-text]');
+      const toggleBtn = rotator.querySelector('[data-rotator-toggle]');
+      const messages = rotator.dataset.messages
+        ? JSON.parse(rotator.dataset.messages)
+        : [
+            '<strong>Listen Now:</strong> Explore this week\'s episode featuring Richmond artists.',
+            '<strong>Happening Tomorrow:</strong> Community town hall at 6 PM with live Q&amp;A.',
+            '<strong>New Podcast Drop:</strong> Hear stories of resilience from across Virginia.'
+          ];
+      let index = 0;
+      let running = true;
+      let timer = window.setInterval(next, 5000);
+
+      function next() {
+        if (!running) return;
+        index = (index + 1) % messages.length;
+        textEl.innerHTML = messages[index];
+      }
+
+      toggleBtn.addEventListener('click', () => {
+        running = !running;
+        toggleBtn.textContent = running ? 'Pause' : 'Play';
+        toggleBtn.setAttribute(
+          'aria-label',
+          running ? 'Pause rotating announcements' : 'Play rotating announcements'
+        );
+        if (running) {
+          clearInterval(timer);
+          timer = window.setInterval(next, 5000);
+        } else {
+          clearInterval(timer);
+        }
+      });
+    });
+  </script>
+</body>
+</html>
